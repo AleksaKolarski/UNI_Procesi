@@ -1,0 +1,7 @@
+@import "login";
+
+input{
+  box-sizing: border-box;
+}
+
+@include login;

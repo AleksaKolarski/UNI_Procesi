@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_05h7pkk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.2.1">
   <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:extensionElements>
+      <camunda:executionListener class="com.projekat.Procesi.handler.StartProcessHandler" event="start" />
+    </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>SequenceFlow_0yenh12</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0yenh12" sourceRef="StartEvent_1" targetRef="Task_1cb1apu" />
-    <bpmn:userTask id="Task_1cb1apu" name="Unos podataka">
+    <bpmn:userTask id="Task_1cb1apu" name="Unos podataka" camunda:formKey="formField">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="unos" label="Unos" type="string" defaultValue="###" />
+          <camunda:formField id="unosString" label="Unos string" type="string" defaultValue="###" />
+          <camunda:formField id="unosLong" label="Unos long" type="long" defaultValue="123" />
+          <camunda:formField id="unosBoolean" label="Unos boolean" type="boolean" />
+          <camunda:formField id="unosDate" label="Unos date" type="date" />
+          <camunda:formField id="unosEnum" label="Unos enum" type="enum">
+            <camunda:value id="valueId1" name="valueName1" />
+            <camunda:value id="valueId2" name="valueName2" />
+          </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${unosPodatakaTaskListener}" event="create" />
       </bpmn:extensionElements>
