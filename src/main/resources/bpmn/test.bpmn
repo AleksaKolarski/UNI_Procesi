@@ -4,20 +4,42 @@
     <bpmn:extensionElements>
       <camunda:executionListener class="com.projekat.Procesi.handler.StartProcessHandler" event="start" />
     </bpmn:extensionElements>
-    <bpmn:startEvent id="StartEvent_1">
+    <bpmn:startEvent id="StartEvent_1" camunda:initiator="student">
       <bpmn:outgoing>SequenceFlow_0yenh12</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0yenh12" sourceRef="StartEvent_1" targetRef="Task_1cb1apu" />
-    <bpmn:userTask id="Task_1cb1apu" name="Unos podataka" camunda:formKey="formField">
+    <bpmn:userTask id="Task_1cb1apu" name="Unos podataka" camunda:formKey="unosPodatakaFormKey" camunda:assignee="${student}">
+      <bpmn:documentation>Ovo je description</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="unosString" label="Unos string" type="string" defaultValue="###" />
+          <camunda:formField id="unosString" label="Unos string" type="string" defaultValue="###">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="minlength" config="8" />
+            </camunda:validation>
+          </camunda:formField>
           <camunda:formField id="unosLong" label="Unos long" type="long" defaultValue="123" />
           <camunda:formField id="unosBoolean" label="Unos boolean" type="boolean" />
           <camunda:formField id="unosDate" label="Unos date" type="date" />
           <camunda:formField id="unosEnum" label="Unos enum" type="enum">
             <camunda:value id="valueId1" name="valueName1" />
             <camunda:value id="valueId2" name="valueName2" />
+          </camunda:formField>
+          <camunda:formField id="unosLongMinMax" label="Unos long MinMax" type="long">
+            <camunda:validation>
+              <camunda:constraint name="min" config="20" />
+              <camunda:constraint name="max" config="30" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="unosStringRequired" label="Unos string required" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="unosStringReadonly" label="Unos string readonly" type="string" defaultValue="READONLY STRING 123">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
           </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${unosPodatakaTaskListener}" event="create" />

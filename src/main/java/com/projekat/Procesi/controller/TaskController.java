@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.engine.FormService;
+import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.form.FormField;
-import org.camunda.bpm.engine.form.FormProperty;
 import org.camunda.bpm.engine.form.TaskFormData;
+import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.projekat.Procesi.util.Util;
 
 @RestController
 @RequestMapping("/projekat/task")
@@ -28,9 +31,14 @@ public class TaskController {
 	@Autowired
 	FormService formService;
 	
+	@Autowired
+	IdentityService identityService;
 	
-	// GET ALL TASK BY PROCESS ID
-	@GetMapping(value = "/getAll/{processInstanceId}")
+	@Autowired
+	Util util;
+	
+	// GET ALL TASKS BY PROCESS ID
+	@GetMapping(value = "/byProcessId/{processInstanceId}")
 	public ResponseEntity<List<TaskDto>> getByProcessInstanceId(@PathVariable("processInstanceId") String processInstanceId){
 		
 		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
@@ -38,6 +46,27 @@ public class TaskController {
 		for(Task task: tasks) {
 			tasksDTO.add(TaskDto.fromEntity(task));
 		}
+		return new ResponseEntity<>(tasksDTO, HttpStatus.OK);
+	}
+	
+	// GET ALL TASKS BY CURRENT USER
+	@GetMapping(value = "/currentUser")
+	public ResponseEntity<List<TaskDto>> getByCurrentUser(){
+		
+		List<Task> tasks;
+		List<TaskDto> tasksDTO;
+		User user;
+		
+		user = util.getCurrentUser();
+		if(user == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		tasks = taskService.createTaskQuery().taskAssignee(user.getId()).list();
+		tasksDTO = new ArrayList<>();
+		for(Task task: tasks) {
+			tasksDTO.add(TaskDto.fromEntity(task));
+		}
+		
 		return new ResponseEntity<>(tasksDTO, HttpStatus.OK);
 	}
 	
