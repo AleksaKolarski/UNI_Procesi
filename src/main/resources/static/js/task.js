@@ -52,24 +52,24 @@ function render_form(formFields){
         html += '<input id="id_form_field_input_'+ formField.id +'" type="number" step="1" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">';
         break;
       case 'boolean':
-        html += '<input id="id_form_field_input_'+ formField.id +'" type="checkbox" '+ (formField.defaultValue == 'true'?'checked':'') +'>';
+        html += '<input id="id_form_field_input_'+ formField.id +'" type="checkbox" '+ (formField.defaultValue == true?'checked':'') +'>';
         break;
       case 'date':
         html += '<input id="id_form_field_input_'+ formField.id +'" type="date">';
         break;
       case 'enum':
-        html += '<select>';
+        html += '<select id="id_form_field_input_'+ formField.id +'">';
         var keys = Object.keys(formField.type.values);
         keys.forEach(key => {
           var value = formField.type.values[key];
-          html += '<option value="'+ key +'">'+ value +'</option>';
+          html += '<option value="'+ key +'" '+ (key==formField.defaultValue?'selected':'') +'>'+ value +'</option>';
         });
         break;
     }
     html += '</div>';
     taskForm.append(html);
 
-    get_validation_constraints(formField);
+    add_validation_constraints(formField);
   });
   
   taskForm.append('<button type="button" id="id_button_complete">Complete</button>');
@@ -77,24 +77,75 @@ function render_form(formFields){
   taskFormButton = $('#id_button_complete');
 
   taskFormButton.on('click', function(e){
-    // AJAX
+    var good = true;
+    formFields.forEach(formField => {
+      if(check_validation_constraints(formField) == false){
+        good = false;
+      }
+    });
+    if(good == false){
+      return;
+    }
+    var fields = [];
+    formFields.forEach(formField => {
+      var readonly = false;
+      formField.validationConstraints.forEach(constraint => {
+        if(constraint.name == 'readonly'){
+          readonly = true;
+        }
+      });
+      if(readonly == true){
+        return;
+      }
+      if(formField.typeName == 'boolean'){
+        fields.push({ 'fieldId': formField.id, 'fieldValue': $('#id_form_field_input_' + formField.id).is(':checked'), 'fieldType': formField.typeName })
+      }
+      else if(formField.typeName == 'date'){
+        var date = new Date($('#id_form_field_input_' + formField.id).val())
+        console.log(date);
+        if(date == 'Invalid Date'){
+          fields.push({ 'fieldId': formField.id, 'fieldValue': null, 'fieldType': formField.typeName })
+        }
+        else{
+          fields.push({ 'fieldId': formField.id, 'fieldValue': date.getDay()+'/'+date.getMonth()+'/'+date.getFullYear(), 'fieldType': formField.typeName })
+        }
+      }
+      else{
+        fields.push({ 'fieldId': formField.id, 'fieldValue': $('#id_form_field_input_' + formField.id).val(), 'fieldType': formField.typeName })
+      }
+    });
+    $.ajax({
+      url: 'projekat/task/' + taskId,
+      method: 'POST',
+      data: JSON.stringify(fields),
+      contentType: 'application/json',
+      success: function(data, status, xhr){
+        window.location.href = '/tasks.html';
+      }
+    });
   });
 }
 
-function get_validation_constraints(formField){
+function add_validation_constraints(formField){
   var formFieldInput = $('#id_form_field_input_' + formField.id);
+  var minlength = null;
+  var maxlength = null;
   var min = null;
   var max = null;
   formField.validationConstraints.forEach(constraint => {
     switch (constraint.name) {
       case 'required':
-        add_validation_text_required(formFieldInput);
+        minlength = 1;
         break;
       case 'minlength':
-        add_validation_text_min(formFieldInput, constraint.configuration);
+        if(minlength == 1 && constraint.configuration < 1){
+          minlength = 1;
+          break;
+        }
+        minlength = constraint.configuration;
         break;
       case 'maxlength':
-        add_validation_text_max(formFieldInput, constraint.configuration);
+        maxlength = constraint.configuration;
         break;
       case 'min':
         min = constraint.configuration;
@@ -104,11 +155,21 @@ function get_validation_constraints(formField){
         break;
       case 'readonly':
         formFieldInput.prop('readonly', true);
-        break;
-      default:
+        formFieldInput.prop('disabled', true);
         break;
     }
   });
+  if(minlength != null && maxlength != null){
+    add_validation_text(formFieldInput, minlength, maxlength);
+  }
+  else{
+    if(minlength != null){
+      add_validation_text_min(formFieldInput, minlength);
+    }
+    if(maxlength != null){
+      add_validation_text_max(formFieldInput, maxlength);
+    }
+  }
   if(min != null && max != null){
     add_validation_number(formFieldInput, min, max);
   }
@@ -120,4 +181,70 @@ function get_validation_constraints(formField){
       add_validation_number_max(formFieldInput, max);
     }
   }
+}
+
+function check_validation_constraints(formField){
+  var formFieldInput = $('#id_form_field_input_' + formField.id);
+  var minlength = null;
+  var maxlength = null;
+  var min = null;
+  var max = null;
+  formField.validationConstraints.forEach(constraint => {
+    switch (constraint.name) {
+      case 'required':
+        minlength = 1;
+        break;
+      case 'minlength':
+        if(minlength == 1 && constraint.configuration < 1){
+          minlength = 1;
+          break;
+        }
+        minlength = constraint.configuration;
+        break;
+      case 'maxlength':
+        maxlength = constraint.configuration;
+        break;
+      case 'min':
+        min = constraint.configuration;
+        break;
+      case 'max':
+        max = constraint.configuration;
+        break;
+    }
+  });
+  if(minlength != null && maxlength != null){
+    if(check_text(formFieldInput, minlength, maxlength) == false){
+      return false;
+    }
+  }
+  else{
+    if(minlength != null){
+      if(check_text_min(formFieldInput, minlength) == false){
+        return false;
+      }
+    }
+    if(maxlength != null){
+      if(check_text_max(formFieldInput, maxlength) == false){
+        return false;
+      }
+    }
+  }
+  if(min != null && max != null){
+    if(check_number(formFieldInput, min, max) == false){
+      return false;
+    }
+  }
+  else{
+    if(min != null){
+      if(check_number_min(formFieldInput, min) == false){
+        return false;
+      }
+    }
+    if(max != null){
+      if(check_number_max(formFieldInput, max) == false){
+        return false;
+      }
+    }
+  }
+  return true;
 }

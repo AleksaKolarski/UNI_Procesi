@@ -20,37 +20,41 @@
           </camunda:formField>
           <camunda:formField id="unosLong" label="Unos long" type="long" defaultValue="123" />
           <camunda:formField id="unosBoolean" label="Unos boolean" type="boolean" />
-          <camunda:formField id="unosDate" label="Unos date" type="date" />
           <camunda:formField id="unosEnum" label="Unos enum" type="enum">
             <camunda:value id="valueId1" name="valueName1" />
             <camunda:value id="valueId2" name="valueName2" />
-          </camunda:formField>
-          <camunda:formField id="unosLongMinMax" label="Unos long MinMax" type="long">
-            <camunda:validation>
-              <camunda:constraint name="min" config="20" />
-              <camunda:constraint name="max" config="30" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="unosStringRequired" label="Unos string required" type="string">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="unosStringReadonly" label="Unos string readonly" type="string" defaultValue="READONLY STRING 123">
-            <camunda:validation>
-              <camunda:constraint name="readonly" config="true" />
-            </camunda:validation>
           </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${unosPodatakaTaskListener}" event="create" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0yenh12</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_011d2yw</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0eb9csb</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:endEvent id="EndEvent_04eigqv">
-      <bpmn:incoming>SequenceFlow_011d2yw</bpmn:incoming>
+    <bpmn:sequenceFlow id="SequenceFlow_0eb9csb" sourceRef="Task_1cb1apu" targetRef="Task_0vznk0j" />
+    <bpmn:userTask id="Task_0vznk0j" name="Ispis podataka" camunda:assignee="${student}">
+      <bpmn:documentation>Pregled zadataka description</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="ispisBoolean" label="Boolean iz prethodnog" type="boolean" defaultValue="${unosBoolean}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="ispisString" label="String iz prethodnog" type="string" defaultValue="${unosString}" />
+          <camunda:formField id="ispisLong" label="Long iz prethodnog" type="long" defaultValue="${unosLong}" />
+          <camunda:formField id="ispisEnum" label="Enum iz prethodnog" type="enum" defaultValue="${unosEnum}">
+            <camunda:value id="valueId1" name="valueName1" />
+            <camunda:value id="valueId2" name="valueName2" />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0eb9csb</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_10k8mas</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_153nduc">
+      <bpmn:incoming>SequenceFlow_10k8mas</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_011d2yw" sourceRef="Task_1cb1apu" targetRef="EndEvent_04eigqv" />
+    <bpmn:sequenceFlow id="SequenceFlow_10k8mas" sourceRef="Task_0vznk0j" targetRef="EndEvent_153nduc" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
@@ -64,12 +68,19 @@
       <bpmndi:BPMNShape id="UserTask_11vzja6_di" bpmnElement="Task_1cb1apu">
         <dc:Bounds x="259" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_04eigqv_di" bpmnElement="EndEvent_04eigqv">
-        <dc:Bounds x="409" y="102" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_011d2yw_di" bpmnElement="SequenceFlow_011d2yw">
+      <bpmndi:BPMNEdge id="SequenceFlow_0eb9csb_di" bpmnElement="SequenceFlow_0eb9csb">
         <di:waypoint x="359" y="120" />
         <di:waypoint x="409" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1a63eig_di" bpmnElement="Task_0vznk0j">
+        <dc:Bounds x="409" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_153nduc_di" bpmnElement="EndEvent_153nduc">
+        <dc:Bounds x="559" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_10k8mas_di" bpmnElement="SequenceFlow_10k8mas">
+        <di:waypoint x="509" y="120" />
+        <di:waypoint x="559" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

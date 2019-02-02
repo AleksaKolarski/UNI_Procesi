@@ -29,12 +29,6 @@ function add_validation_text_max(field, max){
     });
 }
 
-function add_validation_text_required(field){
-    field.on('input', function(e){
-        check_text_required(field);
-    });
-}
-
 // Add validation to email input field
 function add_validation_email(field, max) {
     field.on('input', function (e) {
@@ -105,16 +99,6 @@ function check_text_min(field, min){
 function check_text_max(field, max){
     var content_length = field.val().length;
     if(content_length <= max){
-        field.css('border', '1px solid #ccc');
-        return true;
-    }
-    field.css('border', '1px solid #f00');
-    return false;
-}
-
-function check_text_required(field){
-    var content_length = field.val().length;
-    if(content_length > 0){
         field.css('border', '1px solid #ccc');
         return true;
     }

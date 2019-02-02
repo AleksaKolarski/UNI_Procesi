@@ -1,18 +1,29 @@
-var div_tasks;
+var div_tasks_user;
+var div_tasks_group;
 
 $(document).ready(function(e){
 
-  div_tasks = $('#id_div_tasks');
+  div_tasks_user = $('#id_div_tasks_user');
+  div_tasks_group = $('#id_div_tasks_group');
 
   $.ajax({
     url: '/projekat/task/currentUser',
+    method: 'GET', 
     success: function(data, status, xhr){
-      render_tasks(data);
+      render_tasks(div_tasks_user, data);
+    }
+  });
+
+  $.ajax({
+    url: '/projekat/task/currentUserGroup',
+    method: 'GET', 
+    success: function(data, status, xhr){
+      render_tasks(div_tasks_group, data);
     }
   });
 });
 
-function render_tasks(tasks){
+function render_tasks(target, tasks){
   var html = '';
   tasks.forEach(task => {
     html += '<div class="class_div_task">' + 
@@ -24,5 +35,5 @@ function render_tasks(tasks){
               '</a>' + 
             '</div>';
   });
-  div_tasks.html(html);
+  target.append(html);
 }
