@@ -1,10 +1,8 @@
 package com.projekat.Procesi.controller;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,8 +50,7 @@ public class TaskController {
 
 	// GET ALL TASKS BY PROCESS ID
 	@GetMapping(value = "/byProcessId/{processInstanceId}")
-	public ResponseEntity<List<TaskDto>> getByProcessInstanceId(
-			@PathVariable("processInstanceId") String processInstanceId) {
+	public ResponseEntity<List<TaskDto>> getByProcessInstanceId(@PathVariable("processInstanceId") String processInstanceId) {
 
 		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
 		List<TaskDto> tasksDTO = new ArrayList<>();
@@ -137,8 +134,7 @@ public class TaskController {
 
 	// SUBMIT TASK
 	@PostMapping(value = "/{taskId}")
-	public ResponseEntity<String> submitTask(@PathVariable("taskId") String taskId,
-			@RequestBody List<FormFieldSubmissionDTO> formFieldSubmissionsDTO) {
+	public ResponseEntity<String> submitTask(@PathVariable("taskId") String taskId, @RequestBody List<FormFieldSubmissionDTO> formFieldSubmissionsDTO) {
 		for (FormFieldSubmissionDTO formFieldSubmissionDto : formFieldSubmissionsDTO) {
 			System.out.println(formFieldSubmissionDto.getFieldId() + ": " + formFieldSubmissionDto.getFieldValue());
 		}
@@ -150,6 +146,26 @@ public class TaskController {
 		formService.submitTaskForm(taskId, mapListToDto(formFieldSubmissionsDTO));
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	// CLAIM TASK
+	@PostMapping(value = "/{taskId}/claim")
+	private ResponseEntity<String> claimTask(@PathVariable("taskId") String taskId){
+		
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		if(task == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		User user = util.getCurrentUser();
+		if(user == null) {
+			return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		taskService.claim(taskId, user.getId());
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
 
 	private HashMap<String, Object> mapListToDto(List<FormFieldSubmissionDTO> list) {
 		HashMap<String, Object> map = new HashMap<String, Object>();

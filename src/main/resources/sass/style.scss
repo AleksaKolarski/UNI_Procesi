@@ -1,7 +1,13 @@
 @import "login";
+@import "main";
+@import "tasks";
+@import "task";
 
 input{
   box-sizing: border-box;
 }
 
 @include login;
+@include main;
+@include tasks;
+@include task;

@@ -14,7 +14,7 @@ $(document).ready(function(e){
       data: { username: input_username.val(), password: input_password.val() },
       success: function(data, status, xhr){
         console.log(data);
-        window.location.href = '/tasks.html';
+        window.location.href = '/main.html';
       },
       beforeSend: function(xhr){
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

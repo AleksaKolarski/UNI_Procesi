@@ -79,50 +79,50 @@ function add_validation_number_max(field, max){
 function check_text(field, min, max) {
     var content_length = field.val().length;
     if (content_length >= min && content_length <= max) {
-        field.css('border', '1px solid #ccc');
+        field.css('border', '');
         return true;
     }
-    field.css('border', '1px solid #f00');
+    field.css('border', '2px solid #f00');
     return false;
 }
 
 function check_text_min(field, min){
     var content_length = field.val().length;
     if(content_length >= min){
-        field.css('border', '1px solid #ccc');
+        field.css('border', '');
         return true;
     }
-    field.css('border', '1px solid #f00');
+    field.css('border', '2px solid #f00');
     return false;
 }
 
 function check_text_max(field, max){
     var content_length = field.val().length;
     if(content_length <= max){
-        field.css('border', '1px solid #ccc');
+        field.css('border', '');
         return true;
     }
-    field.css('border', '1px solid #f00');
+    field.css('border', '2px solid #f00');
     return false;
 }
 
 // One time check
 function check_email(field, max) {
     if (/.+\@.+\..+/.test(field.val().toLowerCase()) && field.val().length <= max) {
-        field.css('border', '1px solid #ccc');
+        field.css('border', '');
         return true;
     }
-    field.css('border', '1px solid #ff0000');
+    field.css('border', '2px solid #f00');
     return false;
 }
 
 // One time check
 function check_password_match(field1, field2) {
     if (field1.val() == field2.val()) {
-        field2.css('border', '1px solid #ccc');
+        field2.css('border', '');
         return true;
     }
-    field2.css('border', '1px solid #ff0000');
+    field2.css('border', '2px solid #f00');
     return false;
 }
 
@@ -130,39 +130,39 @@ function check_password_match(field1, field2) {
 function check_password_match(field1, field2, min, max) {
     var content_length = field1.val().length;
     if (field1.val() == field2.val() && content_length >= min && content_length <= max) {
-        field2.css('border', '1px solid #ccc');
+        field2.css('border', '');
         return true;
     }
-    field2.css('border', '1px solid #ff0000');
+    field2.css('border', '2px solid #f00');
     return false;
 }
 
 function check_number(field, min, max){
     var content = parseInt(field.val());
     if(Number.isInteger(content) && content >= min && content <= max){
-        field.css('border', '1px solid #ccc');
+        field.css('border', '');
         return true;
     }
-    field.css('border', '1px solid #ff0000');
+    field.css('border', '2px solid #f00');
     return false;
 }
 
 function check_number_min(field, min){
     var content = parseInt(field.val());
     if(Number.isInteger(content) && content >= min){
-        field.css('border', '1px solid #ccc');
+        field.css('border', '');
         return true;
     }
-    field.css('border', '1px solid #ff0000');
+    field.css('border', '2px solid #f00');
     return false;
 }
 
 function check_number_max(field, max){
     var content = parseInt(field.val());
     if(Number.isInteger(content) && content <= max){
-        field.css('border', '1px solid #ccc');
+        field.css('border', '');
         return true;
     }
-    field.css('border', '1px solid #ff0000');
+    field.css('border', '2px solid #f00');
     return false;
 }

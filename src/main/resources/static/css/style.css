@@ -2,4 +2,109 @@ input {
   box-sizing: border-box;
 }
 
+#id_body_login form {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+  text-align: center;
+}
+#id_body_login form p {
+  font-weight: bold;
+}
+#id_body_login form #div_input_fields {
+  width: 100%;
+  margin: 5px 0px;
+}
+#id_body_login form #div_input_fields div {
+  text-align: left;
+  margin: 5px 0px;
+}
+#id_body_login form #div_input_fields div p {
+  margin: 0;
+  font-weight: normal;
+}
+#id_body_login form #div_input_fields div input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#id_body_main #id_div_main {
+  width: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+  text-align: center;
+}
+
+#id_body_tasks .class_tasks_p {
+  font-weight: 600;
+}
+#id_body_tasks #id_div_tasks {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#id_body_tasks #id_div_tasks a {
+  text-decoration: none;
+  color: inherit;
+}
+#id_body_tasks #id_div_tasks .class_div_tasks {
+  width: 100%;
+}
+#id_body_tasks #id_div_tasks .class_div_tasks .class_div_task {
+  border: 1px solid black;
+  padding: 10px;
+}
+#id_body_tasks #id_div_tasks .class_div_tasks .class_div_task .class_p_task_name {
+  margin: 0px 0px 6px 0px;
+}
+#id_body_tasks #id_div_tasks .class_div_tasks .class_div_task .class_p_task_created {
+  margin: 0px 0px 6px 0px;
+}
+#id_body_tasks #id_div_tasks .class_div_tasks .class_div_task .class_p_task_due {
+  margin: 0px 0px 6px 0px;
+}
+#id_body_tasks #id_div_tasks .class_div_tasks .class_div_task .class_p_task_description {
+  margin: 0px 0px 0px 0px;
+}
+
+#id_body_task #id_div_task {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#id_body_task #id_div_task #id_task_name {
+  margin: 0px 0px 10px 0px;
+  font-size: 1.5em;
+  text-align: center;
+}
+#id_body_task #id_div_task #id_form .class_form_field {
+  text-align: left;
+  margin: 5px 0px;
+}
+#id_body_task #id_div_task #id_form .class_form_field p {
+  margin: 0;
+  font-weight: normal;
+  display: inline;
+}
+#id_body_task #id_div_task #id_form .class_form_field .class_text {
+  width: 100%;
+  box-sizing: border-box;
+}
+#id_body_task #id_div_task #id_form .class_form_field .class_boolean {
+  display: inline;
+  margin-left: 10px;
+}
+#id_body_task #id_div_task #id_form .class_form_field .class_enum {
+  display: inline;
+  margin-left: 10px;
+}
+#id_body_task #id_div_task #id_form .class_button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+
 /*# sourceMappingURL=style.css.map */

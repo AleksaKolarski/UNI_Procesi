@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
 
@@ -13,21 +14,29 @@
   <link rel="stylesheet" type="text/css" href="css/style.css">
 
   <!-- JS -->
+  <script src="js/header.js"></script>
   <script src="js/tasks.js"></script>
 
 </head>
 
-<body>
+<body id="id_body_tasks">
 
-  <div id="id_div_tasks_user">
-      <p>Your tasks:</p>
-      <!-- filled in by javascript -->
+  <div id="id_div_header">
+    <!-- filled in by javascript -->
   </div>
 
-  <div id="id_div_tasks_group">
-      <p>Your group tasks:</p>
+  <div id="id_div_tasks">
+    <div id="id_div_tasks_user" class="class_div_tasks">
+      <p class="class_tasks_p">Your tasks:</p>
       <!-- filled in by javascript -->
+    </div>
+
+    <div id="id_div_tasks_group" class="class_div_tasks">
+      <p class="class_tasks_p">Your group tasks:</p>
+      <!-- filled in by javascript -->
+    </div>
   </div>
 
 </body>
+
 </html>

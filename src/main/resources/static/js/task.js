@@ -4,6 +4,8 @@ var taskName;
 var taskDescription;
 var taskForm;
 var taskFormButton;
+var taskAssigned;
+var taskClaimButton;
 
 $(document).ready(function(e){
 
@@ -21,14 +23,15 @@ $(document).ready(function(e){
       title.text(data.name);
       taskName.text(data.name);
       taskDescription.text(data.description);
-    }
-  });
+      taskAssigned = data.assignee;
 
-  $.ajax({
-    url: '/projekat/task/' + taskId + '/form',
-    method: 'GET',
-    success: function(data, status, xhr){
-      render_form(data);
+      $.ajax({
+        url: '/projekat/task/' + taskId + '/form',
+        method: 'GET',
+        success: function(data, status, xhr){
+          render_form(data);
+        }
+      });
     }
   });
 })
@@ -42,23 +45,23 @@ function init_search_params(){
 function render_form(formFields){
   formFields.forEach(formField => {
     var html = '';
-    html += '<div id="id_form_field">' +
-              '<p>' + formField.label + '</p>';
+    html += '<div class="class_form_field">' +
+              '<p>' + formField.label + ':</p>';
     switch(formField.typeName){
       case 'string':
-        html += '<input id="id_form_field_input_'+ formField.id +'" type="text" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">'
+        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="text" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">'
         break;
       case 'long':
-        html += '<input id="id_form_field_input_'+ formField.id +'" type="number" step="1" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">';
+        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="number" step="1" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">';
         break;
       case 'boolean':
-        html += '<input id="id_form_field_input_'+ formField.id +'" type="checkbox" '+ (formField.defaultValue == true?'checked':'') +'>';
+        html += '<input class="class_boolean" id="id_form_field_input_'+ formField.id +'" type="checkbox" '+ (formField.defaultValue == true?'checked':'') +'>';
         break;
       case 'date':
         html += '<input id="id_form_field_input_'+ formField.id +'" type="date">';
         break;
       case 'enum':
-        html += '<select id="id_form_field_input_'+ formField.id +'">';
+        html += '<select class="class_enum" id="id_form_field_input_'+ formField.id +'">';
         var keys = Object.keys(formField.type.values);
         keys.forEach(key => {
           var value = formField.type.values[key];
@@ -72,9 +75,25 @@ function render_form(formFields){
     add_validation_constraints(formField);
   });
   
-  taskForm.append('<button type="button" id="id_button_complete">Complete</button>');
+  if(taskAssigned == null){
+    taskForm.append('<button type="button" class="class_button" id="id_button_claim">Claim task</button>');
+  }
+  else{
+    taskForm.append('<button type="button" class="class_button" id="id_button_complete">Complete</button>');
+  }
 
+  taskClaimButton = $('#id_button_claim');
   taskFormButton = $('#id_button_complete');
+
+  taskClaimButton.on('click', function(e){
+    $.ajax({
+      url: '/projekat/task/'+ taskId +'/claim',
+      method: 'POST',
+      success: function(data, status, xhr){
+        window.location.href = '/tasks.html';
+      }
+    });
+  });
 
   taskFormButton.on('click', function(e){
     var good = true;
@@ -132,6 +151,9 @@ function add_validation_constraints(formField){
   var maxlength = null;
   var min = null;
   var max = null;
+  if(taskAssigned == null){
+    formField.validationConstraints.push({ name:'required', configuration:'true' });
+  }
   formField.validationConstraints.forEach(constraint => {
     switch (constraint.name) {
       case 'required':

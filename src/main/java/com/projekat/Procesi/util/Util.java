@@ -1,6 +1,7 @@
 package com.projekat.Procesi.util;
 
 import org.camunda.bpm.engine.IdentityService;
+import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.identity.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,4 +34,12 @@ public class Util {
 		return user;
 	}
 	
+	public Group getCurrentUserGroup() {
+		
+		User user = getCurrentUser();
+		if(user == null) {
+			return null;
+		}
+		return identityService.createGroupQuery().groupMember(user.getId()).singleResult();
+	}
 }

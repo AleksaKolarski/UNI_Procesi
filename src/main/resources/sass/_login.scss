@@ -1,3 +1,36 @@
 @mixin login {
+  #id_body_login{
 
+    form{
+      width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 100px;
+      text-align: center;
+
+      p{
+        font-weight: bold;
+      }
+
+      #div_input_fields{
+        width: 100%;
+        margin: 5px 0px;
+
+        div{
+          text-align: left;
+          margin: 5px 0px;
+
+          p{
+            margin: 0;
+            font-weight: normal;
+          }
+
+          input{
+            width: 100%;
+            box-sizing: border-box;
+          }
+        }
+      }
+    }
+  }
 }

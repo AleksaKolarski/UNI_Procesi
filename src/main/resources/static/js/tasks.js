@@ -26,14 +26,14 @@ $(document).ready(function(e){
 function render_tasks(target, tasks){
   var html = '';
   tasks.forEach(task => {
-    html += '<div class="class_div_task">' + 
-              '<a href="/task.html?taskId='+ task.id +'">' + 
-                '<p>name: '+ task.name +'</p>' +
-                '<p>'+ (task.created!=null?'created: '+ moment(task.created).format('DD.MMM.YYYY. hh:mm:ss'):'') +'</p>' + 
-                '<p>'+ (task.due!=null?'due: '+ moment(task.due).format('DD.MMM.YYYY. hh:mm:ss'):'') +'</p>' + 
-                '<p>'+ (task.description!=null?'description: ' + task.description:'') + '</p>' + 
-              '</a>' + 
-            '</div>';
+    html += '<a href="/task.html?taskId='+ task.id +'">' + 
+              '<div class="class_div_task">' + 
+                '<p class="class_p_task_name">name: '+ task.name +'</p>' +
+                '<p class="class_p_task_created">'+ (task.created!=null?'created: '+ moment(task.created).format('DD.MMM.YYYY. hh:mm:ss'):'') +'</p>' + 
+                (task.due!=null?'<p class="class_p_task_due">due: '+ moment(task.due).format('DD.MMM.YYYY. hh:mm:ss') +'</p>':'') + 
+                '<p class="class_p_task_description">'+ (task.description!=null?'description: ' + task.description:'') + '</p>' + 
+              '</div>' + 
+            '</a>';
   });
   target.append(html);
 }
