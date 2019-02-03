@@ -15,39 +15,80 @@
       <bpmn:documentation>Prijava za izradu zavrsnog (bachelor) rada. Podatke unosi student.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="vrstaStudija" label="Vrsta studija" type="enum">
+          <camunda:formField id="inVrstaStudija" label="Vrsta studija" type="enum">
             <camunda:value id="akademske" name="Osnovne akademske studije" />
             <camunda:value id="strukovne" name="Osnovne strukovne studije" />
           </camunda:formField>
-          <camunda:formField id="imePrezime" label="Ime i prezime studenta" type="string" defaultValue="${student.firstName} ${student.lastName}">
+          <camunda:formField id="inImePrezime" label="Ime i prezime studenta" type="string" defaultValue="${student.firstName} ${student.lastName}">
             <camunda:validation>
               <camunda:constraint name="readonly" config="true" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="brojIndeksa" label="Broj indeksa" type="string">
+          <camunda:formField id="inBrojIndeksa" label="Broj indeksa" type="string">
             <camunda:validation>
               <camunda:constraint name="required" config="true" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="studijskiProgram" label="Studijski program" type="string">
+          <camunda:formField id="inStudijskiProgram" label="Studijski program" type="string">
             <camunda:validation>
               <camunda:constraint name="required" config="true" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="studijskaGrupa" label="Studijska grupa" type="string" />
-          <camunda:formField id="oblast" label="Oblast rada" type="string">
+          <camunda:formField id="inStudijskaGrupa" label="Studijska grupa" type="string" />
+          <camunda:formField id="inOblast" label="Oblast rada" type="string">
             <camunda:validation>
               <camunda:constraint name="required" config="true" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="mentor" label="Mentor" type="enum">
+          <camunda:formField id="inMentor" label="Mentor" type="enum">
             <camunda:properties>
               <camunda:property id="enumSource" value="user/professors" />
             </camunda:properties>
           </camunda:formField>
         </camunda:formData>
+        <camunda:executionListener class="com.projekat.Procesi.handler.InitMentor" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0f9sfkg</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1z0vhnf</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1z0vhnf" sourceRef="Task_studentPopunjavaPrijavu" targetRef="Task_referentProveravaPrijavu" />
+    <bpmn:userTask id="Task_referentProveravaPrijavu" name="Referent proverava prijavu" camunda:formKey="referentProveravaPrijavuFormKey" camunda:assignee="referent" camunda:candidateGroups="studentskaSluzba">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="outVrstaStudija" label="Vrsta studija" type="string" defaultValue="${inVrstaStudija}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outImePrezime" label="Ime i prezime" type="string" defaultValue="${inImePrezime}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outBrojIndeksa" label="Broj indeksa" type="string" defaultValue="${inBrojIndeksa}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outStudijskiProgram" label="Studijski program" type="string" defaultValue="${inStudijskiProgram}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outStudijskaGrupa" label="Studijska grupa" type="string" defaultValue="${inStudijskaGrupa}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outOblast" label="Oblast" type="string" defaultValue="${inOblast}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outMentor" label="Mentor" type="string" defaultValue="${mentor.firstName} ${mentor.lastName} " />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1z0vhnf</bpmn:incoming>
     </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -64,6 +105,13 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_08scohb_di" bpmnElement="Task_studentPopunjavaPrijavu">
         <dc:Bounds x="259" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1z0vhnf_di" bpmnElement="SequenceFlow_1z0vhnf">
+        <di:waypoint x="359" y="120" />
+        <di:waypoint x="409" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1idozs1_di" bpmnElement="Task_referentProveravaPrijavu">
+        <dc:Bounds x="409" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
