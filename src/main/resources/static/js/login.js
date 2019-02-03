@@ -13,7 +13,6 @@ $(document).ready(function(e){
       method: 'POST',
       data: { username: input_username.val(), password: input_password.val() },
       success: function(data, status, xhr){
-        console.log(data);
         window.location.href = '/main.html';
       },
       beforeSend: function(xhr){

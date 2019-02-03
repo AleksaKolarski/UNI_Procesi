@@ -1,5 +1,9 @@
 package com.projekat.Procesi.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projekat.Procesi.dto.EnumDTO;
 import com.projekat.Procesi.dto.UserDTO;
 import com.projekat.Procesi.util.Util;
 
 @RestController
 @RequestMapping("/projekat/user")
 public class UserController {
-		
+	
+	@Autowired
+	IdentityService identityService;
+	
 	@Autowired
 	private Util util;
 	
@@ -39,6 +47,17 @@ public class UserController {
 		}
 
 		return new ResponseEntity<>(userDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping("/professors")
+	public ResponseEntity<List<EnumDTO>> getProfessors(){
+		
+		List<EnumDTO> enumDTOList = new ArrayList<>();
+		List<User> professors = identityService.createUserQuery().memberOfGroup("professors").list();
+		for(User user: professors) {
+			enumDTOList.add(new EnumDTO(user.getId(), user.getFirstName() + " " + user.getLastName()));
+		}
+		return new ResponseEntity<List<EnumDTO>>(enumDTOList, HttpStatus.OK);
 	}
 	
 }

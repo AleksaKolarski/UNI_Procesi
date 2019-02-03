@@ -24,7 +24,7 @@ import com.projekat.Procesi.util.Util;
 @RequestMapping("/projekat/process")
 public class ProcessController {
 	
-	String processName = "Process_1";
+	String processName = "Projekat";
 	
 	@Autowired
 	RuntimeService runtimeService;

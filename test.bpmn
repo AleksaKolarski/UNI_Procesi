@@ -25,7 +25,6 @@
             <camunda:value id="valueId2" name="valueName2" />
           </camunda:formField>
         </camunda:formData>
-        <camunda:taskListener delegateExpression="${unosPodatakaTaskListener}" event="create" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0yenh12</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0eb9csb</bpmn:outgoing>

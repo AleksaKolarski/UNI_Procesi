@@ -67,6 +67,18 @@ function render_form(formFields){
           var value = formField.type.values[key];
           html += '<option value="'+ key +'" '+ (key==formField.defaultValue?'selected':'') +'>'+ value +'</option>';
         });
+        if(formField.properties.enumSource != null){
+          $.ajax({
+            url: '/projekat/' + formField.properties.enumSource,
+            method: 'GET',
+            success: function(data, status, xhr){
+              data.forEach(one => {
+                $('#id_form_field_input_' + formField.id).append('<option value="'+ one.key +'" '+ (one.key==formField.defaultValue?'selected':'') +'>'+ one.value +'</option>');
+              });
+            }
+          });
+        }
+        html += '</select>';
         break;
     }
     html += '</div>';

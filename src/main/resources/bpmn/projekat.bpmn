@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0be84hv" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.2.1">
+  <bpmn:process id="Projekat" isExecutable="true" camunda:candidateStarterGroups="students">
+    <bpmn:extensionElements>
+      <camunda:executionListener class="com.projekat.Procesi.handler.StartProcessHandler" event="start" />
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" camunda:initiator="studentID">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="com.projekat.Procesi.handler.InitStudent" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_0f9sfkg</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0f9sfkg" sourceRef="StartEvent_1" targetRef="Task_studentPopunjavaPrijavu" />
+    <bpmn:userTask id="Task_studentPopunjavaPrijavu" name="Student popunjava prijavu" camunda:formKey="studentPopunjavaPrijavuFormKey" camunda:assignee="${student.id}">
+      <bpmn:documentation>Prijava za izradu zavrsnog (bachelor) rada. Podatke unosi student.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="vrstaStudija" label="Vrsta studija" type="enum">
+            <camunda:value id="akademske" name="Osnovne akademske studije" />
+            <camunda:value id="strukovne" name="Osnovne strukovne studije" />
+          </camunda:formField>
+          <camunda:formField id="imePrezime" label="Ime i prezime studenta" type="string" defaultValue="${student.firstName} ${student.lastName}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="brojIndeksa" label="Broj indeksa" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="studijskiProgram" label="Studijski program" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="studijskaGrupa" label="Studijska grupa" type="string" />
+          <camunda:formField id="oblast" label="Oblast rada" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="mentor" label="Mentor" type="enum">
+            <camunda:properties>
+              <camunda:property id="enumSource" value="user/professors" />
+            </camunda:properties>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0f9sfkg</bpmn:incoming>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Projekat">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="188" y="145" width="6" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0f9sfkg_di" bpmnElement="SequenceFlow_0f9sfkg">
+        <di:waypoint x="209" y="120" />
+        <di:waypoint x="259" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_08scohb_di" bpmnElement="Task_studentPopunjavaPrijavu">
+        <dc:Bounds x="259" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
