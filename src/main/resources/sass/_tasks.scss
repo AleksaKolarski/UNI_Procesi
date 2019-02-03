@@ -1,8 +1,6 @@
 @mixin tasks{
   #id_body_tasks{
 
-
-
     .class_tasks_p{
       font-weight: 600;
     }
@@ -11,6 +9,7 @@
       width: 400px;
       margin-left: auto;
       margin-right: auto;
+      margin-top: 50px;
 
       a{
         text-decoration: none;

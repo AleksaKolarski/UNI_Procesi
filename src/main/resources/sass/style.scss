@@ -2,6 +2,7 @@
 @import "main";
 @import "tasks";
 @import "task";
+@import "header";
 
 input{
   box-sizing: border-box;
@@ -11,3 +12,4 @@ input{
 @include main;
 @include tasks;
 @include task;
+@include header;
