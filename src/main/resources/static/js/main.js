@@ -32,6 +32,16 @@ $(document).ready(function (e) {
           }
         });
       }
+      else if(user.groupId == 'camunda-admin'){
+        $('#id_div_main').html( '<p>Init users</p>' +
+                                '<button type="button" id="id_button_init_users">Init</button>');
+        $('#id_button_init_users').on('click', function(e){
+          $.ajax({
+            url: '/projekat/user/initUsers',
+            method: 'POST'
+          });
+        });
+      }
       else{
         window.location.href = '/tasks.html';
       }

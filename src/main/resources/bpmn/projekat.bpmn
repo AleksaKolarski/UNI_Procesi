@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0be84hv" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.2.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0be84hv" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.2.1">
   <bpmn:process id="Projekat" isExecutable="true" camunda:candidateStarterGroups="students">
     <bpmn:extensionElements>
       <camunda:executionListener class="com.projekat.Procesi.handler.StartProcessHandler" event="start" />
@@ -10,8 +10,8 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0f9sfkg</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0f9sfkg" sourceRef="StartEvent_1" targetRef="Task_studentPopunjavaPrijavu" />
-    <bpmn:userTask id="Task_studentPopunjavaPrijavu" name="Student popunjava prijavu" camunda:formKey="studentPopunjavaPrijavuFormKey" camunda:assignee="${student.id}">
+    <bpmn:sequenceFlow id="SequenceFlow_0f9sfkg" sourceRef="StartEvent_1" targetRef="Task_StudentPopunjavaPrijavu" />
+    <bpmn:userTask id="Task_StudentPopunjavaPrijavu" name="Student popunjava prijavu" camunda:formKey="studentPopunjavaPrijavuFormKey" camunda:assignee="${student.id}">
       <bpmn:documentation>Prijava za izradu zavrsnog (bachelor) rada. Podatke unosi student.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
@@ -40,19 +40,17 @@
               <camunda:constraint name="required" config="true" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="inMentor" label="Mentor" type="enum">
-            <camunda:properties>
-              <camunda:property id="enumSource" value="user/professors" />
-            </camunda:properties>
-          </camunda:formField>
+          <camunda:formField id="inMentor" label="Mentor" type="enum" />
         </camunda:formData>
         <camunda:executionListener class="com.projekat.Procesi.handler.InitMentor" event="end" />
+        <camunda:taskListener class="com.projekat.Procesi.handler.InitMentorEnum" event="create" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0f9sfkg</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1xpxerz</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1z0vhnf</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_1z0vhnf" sourceRef="Task_studentPopunjavaPrijavu" targetRef="Task_referentProveravaPrijavu" />
-    <bpmn:userTask id="Task_referentProveravaPrijavu" name="Referent proverava prijavu" camunda:formKey="referentProveravaPrijavuFormKey" camunda:assignee="referent" camunda:candidateGroups="studentskaSluzba">
+    <bpmn:sequenceFlow id="SequenceFlow_1z0vhnf" sourceRef="Task_StudentPopunjavaPrijavu" targetRef="Task_ReferentProveravaPrijavu" />
+    <bpmn:userTask id="Task_ReferentProveravaPrijavu" name="Referent proverava prijavu" camunda:formKey="referentProveravaPrijavuFormKey" camunda:candidateGroups="studentService">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="outVrstaStudija" label="Vrsta studija" type="string" defaultValue="${inVrstaStudija}">
@@ -85,33 +83,281 @@
               <camunda:constraint name="readonly" config="true" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="outMentor" label="Mentor" type="string" defaultValue="${mentor.firstName} ${mentor.lastName} " />
+          <camunda:formField id="outMentor" label="Mentor" type="string" defaultValue="${mentor.firstName} ${mentor.lastName} ">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="inReferentOdobravaPrijavu" label="Odobri prijavu" type="boolean" />
         </camunda:formData>
+        <camunda:taskListener class="com.projekat.Procesi.handler.InitReferent" event="assignment" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1z0vhnf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ckgf4q</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1mempmo">
+      <bpmn:incoming>SequenceFlow_0ckgf4q</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_054a7ct</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1xpxerz</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0ckgf4q" sourceRef="Task_ReferentProveravaPrijavu" targetRef="ExclusiveGateway_1mempmo" />
+    <bpmn:sequenceFlow id="SequenceFlow_054a7ct" sourceRef="ExclusiveGateway_1mempmo" targetRef="ExclusiveGateway_02l8f3f">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${inReferentOdobravaPrijavu == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1xpxerz" sourceRef="ExclusiveGateway_1mempmo" targetRef="Task_StudentPopunjavaPrijavu">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${inReferentOdobravaPrijavu == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Task_RukovodilacImenujeKomisiju" name="Rukovodilac stud. prog. utvrdjuje naslov rada i predlog clanova komisije" camunda:formKey="rukovodilacUtvrdjujeNaslovClanoviKomisije" camunda:assignee="${chief.id}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="outStudent" label="Student" type="string" defaultValue="${student.firstName} ${student.lastName}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outBrojIndeksa" label="Broj indeksa" type="string" defaultValue="${inBrojIndeksa}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outStudijskiProgram" label="Studijski program" type="string" defaultValue="${inStudijskiProgram}" />
+          <camunda:formField id="outNaslovRada" label="Naslov rada" type="string" defaultValue="${inNaslovRada}" />
+          <camunda:formField id="inPredsednik" label="Predsednik" type="enum" />
+          <camunda:formField id="inClan1" label="Clan" type="enum" />
+          <camunda:formField id="inClan2" label="Clan" type="enum" />
+          <camunda:formField id="inClan3" label="Clan" type="enum" />
+          <camunda:formField id="outMentor" label="Mentor" type="string" defaultValue="${mentor.firstName} ${mentor.lastName}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.projekat.Procesi.handler.InitBoardEnum" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_01nsqn4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ynwhpt</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_MentorRazmatraNaslovRada" name="Mentor razmatra naslov rada" camunda:formKey="mentorPredlazeNaslovRadaFormKey" camunda:assignee="${mentor.id}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="outNaslovRada" label="Predlog naslova rada" type="string" defaultValue="${inNaslovRada}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="inNaslovRadaPrimedba" label="Primedba na naslov" type="string" />
+          <camunda:formField id="inNaslovRadaPrihvacen" label="Prihvati" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1h1x6xv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0bz84ji</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1ynwhpt" sourceRef="Task_RukovodilacImenujeKomisiju" targetRef="Task_0s4lvxv" />
+    <bpmn:parallelGateway id="ExclusiveGateway_02l8f3f">
+      <bpmn:incoming>SequenceFlow_054a7ct</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0rdvmm4</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1q7ai4z</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0rdvmm4" sourceRef="ExclusiveGateway_02l8f3f" targetRef="Task_ReferentProsledjujeZahtevRukovodiocu" />
+    <bpmn:sequenceFlow id="SequenceFlow_1q7ai4z" sourceRef="ExclusiveGateway_02l8f3f" targetRef="Task_StudentPredlazeNaslovRada" />
+    <bpmn:sequenceFlow id="SequenceFlow_1h1x6xv" sourceRef="Task_StudentPredlazeNaslovRada" targetRef="Task_MentorRazmatraNaslovRada" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0zztbkg">
+      <bpmn:incoming>SequenceFlow_0bz84ji</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0jy47w2</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0tnupt7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0bz84ji" sourceRef="Task_MentorRazmatraNaslovRada" targetRef="ExclusiveGateway_0zztbkg" />
+    <bpmn:sequenceFlow id="SequenceFlow_0jy47w2" sourceRef="ExclusiveGateway_0zztbkg" targetRef="Task_StudentPredlazeNaslovRada">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${inNaslovRadaPrihvacen == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0tnupt7" sourceRef="ExclusiveGateway_0zztbkg" targetRef="ExclusiveGateway_1hz2uyu">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${inNaslovRadaPrihvacen == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:parallelGateway id="ExclusiveGateway_1hz2uyu">
+      <bpmn:incoming>SequenceFlow_0tnupt7</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_11lhn7b</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_01nsqn4</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_01nsqn4" sourceRef="ExclusiveGateway_1hz2uyu" targetRef="Task_RukovodilacImenujeKomisiju" />
+    <bpmn:sequenceFlow id="SequenceFlow_11lhn7b" sourceRef="Task_ReferentProsledjujeZahtevRukovodiocu" targetRef="ExclusiveGateway_1hz2uyu" />
+    <bpmn:userTask id="Task_StudentPredlazeNaslovRada" name="Student predlaze naslov rada" camunda:assignee="${student.id}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="outNaslovRadaPrimedba" label="Primedba na naziv" type="string" defaultValue="${inNaslovRadaPrimedba}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="inNaslovRada" label="Naslov rada" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="Javascript">if(execution.getVariable("inNaslovRadaPrimedba") == null){
+    execution.setVariable("inNaslovRadaPrimedba", "");
+}</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1q7ai4z</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0jy47w2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1h1x6xv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_ReferentProsledjujeZahtevRukovodiocu" name="Referent prosledjuje zahtev rukovodiocu" camunda:assignee="${referent.id}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="outVrstaStudija" label="Vrsta studija" type="string" defaultValue="${inVrstaStudija}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outStudijskiProgram" label="Studijski program" type="string" defaultValue="${inStudijskiProgram}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="inRukovodilac" label="Rukovodilac" type="enum" />
+          <camunda:formField id="outImePrezime" label="Ime i prezime" type="string" defaultValue="${student.firstName} ${student.lastName}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outBrojIndeksa" label="Broj indeksa" type="string" defaultValue="${inBrojIndeksa}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outStudijskaGrupa" label="Studijska grupa" type="string" defaultValue="${inStudijskaGrupa}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outOblast" label="Oblast" type="string" defaultValue="${inOblast}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="outMentor" label="Mentor" type="string" defaultValue="${mentor.firstName} ${mentor.lastName} ">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.projekat.Procesi.handler.InitChiefEnum" event="create" />
+        <camunda:executionListener class="com.projekat.Procesi.handler.InitChief" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0rdvmm4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_11lhn7b</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_0s4lvxv" name="Referent sluzbe zavodi naslov diplomskog i clanove komisije" camunda:assignee="${referent.id}">
+      <bpmn:incoming>SequenceFlow_1ynwhpt</bpmn:incoming>
     </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Projekat">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="173" y="102" width="36" height="36" />
+        <dc:Bounds x="246" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="188" y="145" width="6" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0f9sfkg_di" bpmnElement="SequenceFlow_0f9sfkg">
-        <di:waypoint x="209" y="120" />
-        <di:waypoint x="259" y="120" />
+        <di:waypoint x="282" y="120" />
+        <di:waypoint x="320" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_08scohb_di" bpmnElement="Task_studentPopunjavaPrijavu">
-        <dc:Bounds x="259" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="UserTask_08scohb_di" bpmnElement="Task_StudentPopunjavaPrijavu">
+        <dc:Bounds x="320" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1z0vhnf_di" bpmnElement="SequenceFlow_1z0vhnf">
-        <di:waypoint x="359" y="120" />
-        <di:waypoint x="409" y="120" />
+        <di:waypoint x="420" y="120" />
+        <di:waypoint x="445" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1idozs1_di" bpmnElement="Task_referentProveravaPrijavu">
-        <dc:Bounds x="409" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="UserTask_1idozs1_di" bpmnElement="Task_ReferentProveravaPrijavu">
+        <dc:Bounds x="445" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1mempmo_di" bpmnElement="ExclusiveGateway_1mempmo" isMarkerVisible="true">
+        <dc:Bounds x="575" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ckgf4q_di" bpmnElement="SequenceFlow_0ckgf4q">
+        <di:waypoint x="545" y="120" />
+        <di:waypoint x="575" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_054a7ct_di" bpmnElement="SequenceFlow_054a7ct">
+        <di:waypoint x="625" y="120" />
+        <di:waypoint x="648" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1xpxerz_di" bpmnElement="SequenceFlow_1xpxerz">
+        <di:waypoint x="600" y="145" />
+        <di:waypoint x="600" y="225" />
+        <di:waypoint x="370" y="225" />
+        <di:waypoint x="370" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_02ebe51_di" bpmnElement="Task_RukovodilacImenujeKomisiju">
+        <dc:Bounds x="1094" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1dnv895_di" bpmnElement="Task_MentorRazmatraNaslovRada">
+        <dc:Bounds x="838" y="22" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ynwhpt_di" bpmnElement="SequenceFlow_1ynwhpt">
+        <di:waypoint x="1194" y="120" />
+        <di:waypoint x="1231" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_0fanfac_di" bpmnElement="ExclusiveGateway_02l8f3f">
+        <dc:Bounds x="648" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0rdvmm4_di" bpmnElement="SequenceFlow_0rdvmm4">
+        <di:waypoint x="673" y="145" />
+        <di:waypoint x="673" y="222" />
+        <di:waypoint x="801" y="222" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1q7ai4z_di" bpmnElement="SequenceFlow_1q7ai4z">
+        <di:waypoint x="673" y="95" />
+        <di:waypoint x="673" y="62" />
+        <di:waypoint x="707" y="62" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1h1x6xv_di" bpmnElement="SequenceFlow_1h1x6xv">
+        <di:waypoint x="807" y="62" />
+        <di:waypoint x="838" y="62" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0zztbkg_di" bpmnElement="ExclusiveGateway_0zztbkg" isMarkerVisible="true">
+        <dc:Bounds x="964" y="37" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0bz84ji_di" bpmnElement="SequenceFlow_0bz84ji">
+        <di:waypoint x="938" y="62" />
+        <di:waypoint x="964" y="62" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jy47w2_di" bpmnElement="SequenceFlow_0jy47w2">
+        <di:waypoint x="989" y="37" />
+        <di:waypoint x="989" y="-31" />
+        <di:waypoint x="757" y="-31" />
+        <di:waypoint x="757" y="22" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0tnupt7_di" bpmnElement="SequenceFlow_0tnupt7">
+        <di:waypoint x="1014" y="62" />
+        <di:waypoint x="1041" y="62" />
+        <di:waypoint x="1041" y="95" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_15aiij1_di" bpmnElement="ExclusiveGateway_1hz2uyu">
+        <dc:Bounds x="1016" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_01nsqn4_di" bpmnElement="SequenceFlow_01nsqn4">
+        <di:waypoint x="1066" y="120" />
+        <di:waypoint x="1094" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_11lhn7b_di" bpmnElement="SequenceFlow_11lhn7b">
+        <di:waypoint x="901" y="222" />
+        <di:waypoint x="1041" y="222" />
+        <di:waypoint x="1041" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0lcv2qd_di" bpmnElement="Task_StudentPredlazeNaslovRada">
+        <dc:Bounds x="707" y="22" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0qda99m_di" bpmnElement="Task_ReferentProsledjujeZahtevRukovodiocu">
+        <dc:Bounds x="801" y="182" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_00rxyfo_di" bpmnElement="Task_0s4lvxv">
+        <dc:Bounds x="1231" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

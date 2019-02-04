@@ -45,11 +45,17 @@ function init_search_params(){
 function render_form(formFields){
   formFields.forEach(formField => {
     var html = '';
-    html += '<div class="class_form_field">' +
+    html += '<div class="class_form_field" id="id_form_field_div_'+ formField.id +'">' +
               '<p>' + formField.label + ':</p>';
+
+    if(formField.typeName == 'string'){
+      if(formField.properties.enumSource != null){
+        formField.typeName = 'enum';
+      }
+    }
     switch(formField.typeName){
       case 'string':
-        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="text" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">'
+        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="text" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">';
         break;
       case 'long':
         html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="number" step="1" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">';
@@ -62,12 +68,14 @@ function render_form(formFields){
         break;
       case 'enum':
         html += '<select class="class_enum" id="id_form_field_input_'+ formField.id +'">';
-        var keys = Object.keys(formField.type.values);
-        keys.forEach(key => {
-          var value = formField.type.values[key];
-          html += '<option value="'+ key +'" '+ (key==formField.defaultValue?'selected':'') +'>'+ value +'</option>';
-        });
-        if(formField.properties.enumSource != null){
+        if(formField.properties.enumSource == null){
+          var keys = Object.keys(formField.type.values);
+          keys.forEach(key => {
+            var value = formField.type.values[key];
+            html += '<option value="'+ key +'" '+ (key==formField.defaultValue?'selected':'') +'>'+ value +'</option>';
+          });
+        }
+        else{
           $.ajax({
             url: '/projekat/' + formField.properties.enumSource,
             method: 'GET',
@@ -164,7 +172,7 @@ function add_validation_constraints(formField){
   var min = null;
   var max = null;
   if(taskAssigned == null){
-    formField.validationConstraints.push({ name:'required', configuration:'true' });
+    formField.validationConstraints.push({ name:'readonly', configuration:'true' });
   }
   formField.validationConstraints.forEach(constraint => {
     switch (constraint.name) {
@@ -190,6 +198,9 @@ function add_validation_constraints(formField){
       case 'readonly':
         formFieldInput.prop('readonly', true);
         formFieldInput.prop('disabled', true);
+        if(formFieldInput.val().length == 0){
+          $('#id_form_field_div_'+ formField.id).css('display', 'none');
+        }
         break;
     }
   });
