@@ -1,17 +1,26 @@
 package com.projekat.Procesi.dto;
 
+import java.io.Serializable;
+
 import org.camunda.bpm.engine.identity.User;
 
-public class UserDTO {
+public class UserDTO implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	private String id;
-	private String firstname;
-	private String lastname;
+	private String firstName;
+	private String lastName;
 	private String email;
 	private String groupId;
 	
 	
 	public UserDTO() {}
+	
+	public UserDTO(String id, String firstName, String lastName) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 
 	
 	public String getId() {
@@ -22,20 +31,20 @@ public class UserDTO {
 		this.id = id;
 	}
 
-	public String getFirstname() {
-		return firstname;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getLastname() {
-		return lastname;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -57,8 +66,8 @@ public class UserDTO {
 	public static UserDTO fromUser(User user) {
 		UserDTO userDTO = new UserDTO();
 		userDTO.setId(user.getId());
-		userDTO.setFirstname(user.getFirstName());
-		userDTO.setLastname(user.getLastName());
+		userDTO.setFirstName(user.getFirstName());
+		userDTO.setLastName(user.getLastName());
 		userDTO.setEmail(user.getEmail());
 		return userDTO;
 	}

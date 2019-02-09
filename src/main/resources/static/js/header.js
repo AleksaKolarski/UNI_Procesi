@@ -5,7 +5,7 @@ $(document).ready(function(e){
     success: function(user, status, xhr){
       var header = $('#id_div_header');
       var html = '';
-      html += '<p>'+ user.firstname +' '+ user.lastname +'</p>';
+      html += '<p>'+ user.firstName +' '+ user.lastName +'</p>';
       html += '<button type="button" id="id_button_logout">Logout</button>';
       header.html(html);
 
@@ -18,6 +18,11 @@ $(document).ready(function(e){
           }
         });
       });
+    },
+    error: function(xhr, status, error){
+      if(xhr.status == 404 || xhr.status == 401){
+        window.location.href = '/login.html';
+      }
     }
   });
 });

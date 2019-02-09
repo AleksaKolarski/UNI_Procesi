@@ -15,7 +15,7 @@ public class InitChief implements ExecutionListener {
 
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
-		String chiefID = (String)execution.getVariable("inRukovodilac");
+		String chiefID = (String)execution.getVariable("inChief");
 		User chief = identityService.createUserQuery().userId(chiefID).singleResult();
 		execution.setVariable("chief", chief);
 	}

@@ -28,21 +28,25 @@ public class InitBoardEnum implements TaskListener {
 		String taskId = delegateTask.getId();
 		TaskFormData tfd = formService.getTaskFormData(taskId);
 		List<FormField> fields = tfd.getFormFields();
+		List<User> professors = identityService.createUserQuery().memberOfGroup("professors").list();
+		User mentor = (User) delegateTask.getExecution().getVariable("mentor");
 		for (FormField f : fields) {
-			if (f.getTypeName().equals("enum") && (f.getId().equals("inPredsednik") || f.getId().equals("inClan1") || f.getId().equals("inClan2") || f.getId().equals("inClan3"))) {
-				EnumFormType enumFormType = (EnumFormType) f.getType();
-				Map<String, String> values = enumFormType.getValues();
-				List<User> professors = identityService.createUserQuery().memberOfGroup("professors").list();
-				User mentor = (User) delegateTask.getExecution().getVariable("mentor");
-				for(User professor: professors) {
-					if(professor.getId().equals(mentor.getId())) {
-						continue;
+			if(f.getTypeName().equals("enum")) {				
+				if(f.getId().equals("inPresident") || f.getId().equals("inBoard1") || f.getId().equals("inBoard2") || f.getId().equals("inBoard3")) {
+					EnumFormType enumFormType = (EnumFormType) f.getType();
+					Map<String, String> values = enumFormType.getValues();
+					if(f.getId().equals("inBoard2") || f.getId().equals("inBoard3")) {
+						values.put("", "");
 					}
-					values.put(professor.getId(), professor.getFirstName() + " " + professor.getLastName());
+					for(User professor: professors) {
+						if(professor.getId().equals(mentor.getId())) {
+							continue;
+						}
+						values.put(professor.getId(), professor.getFirstName() + " " + professor.getLastName());
+					}
 				}
 			}
 		}
-
 	}
 
 }

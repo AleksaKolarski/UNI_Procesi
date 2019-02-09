@@ -198,7 +198,7 @@ function add_validation_constraints(formField){
       case 'readonly':
         formFieldInput.prop('readonly', true);
         formFieldInput.prop('disabled', true);
-        if(formFieldInput.val().length == 0){
+        if(formFieldInput.val().length == 0 || $.trim( formFieldInput.val() ) == ''){
           $('#id_form_field_div_'+ formField.id).css('display', 'none');
         }
         break;

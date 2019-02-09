@@ -135,9 +135,6 @@ public class TaskController {
 	// SUBMIT TASK
 	@PostMapping(value = "/{taskId}")
 	public ResponseEntity<String> submitTask(@PathVariable("taskId") String taskId, @RequestBody List<FormFieldSubmissionDTO> formFieldSubmissionsDTO) {
-		for (FormFieldSubmissionDTO formFieldSubmissionDto : formFieldSubmissionsDTO) {
-			System.out.println(formFieldSubmissionDto.getFieldId() + ": " + formFieldSubmissionDto.getFieldValue());
-		}
 
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		if (task == null) {

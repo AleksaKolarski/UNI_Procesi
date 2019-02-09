@@ -29,7 +29,7 @@ public class InitChiefEnum implements TaskListener {
 		TaskFormData tfd = formService.getTaskFormData(taskId);
 		List<FormField> fields = tfd.getFormFields();
 		for (FormField f : fields) {
-			if (f.getTypeName().equals("enum") && f.getId().equals("inRukovodilac")) {
+			if (f.getTypeName().equals("enum") && f.getId().equals("inChief")) {
 				EnumFormType enumFormType = (EnumFormType) f.getType();
 				Map<String, String> values = enumFormType.getValues();
 				List<User> professors = identityService.createUserQuery().memberOfGroup("professors").list();
