@@ -94,7 +94,7 @@ public class UserController {
 			User userStudent1 = identityService.newUser("student1");
 			userStudent1.setFirstName("Student1");
 			userStudent1.setLastName("Student1");
-			userStudent1.setEmail("student1@gmail.com");
+			userStudent1.setEmail("aleksa.kolarski96@gmail.com");
 			userStudent1.setPassword("student1");
 			identityService.saveUser(userStudent1);
 

@@ -3,14 +3,13 @@ package com.projekat.Procesi;
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import com.projekat.Procesi.storage.StorageProperties;
 
 @SpringBootApplication
 @EnableProcessApplication
+@EnableConfigurationProperties(StorageProperties.class)
 public class ProcesiApplication {
 
 	public static void main(String[] args) {

@@ -6,6 +6,7 @@ var taskForm;
 var taskFormButton;
 var taskAssigned;
 var taskClaimButton;
+var fileFieldNumber = 0;
 
 $(document).ready(function(e){
 
@@ -52,19 +53,29 @@ function render_form(formFields){
       if(formField.properties.enumSource != null){
         formField.typeName = 'enum';
       }
+      if(formField.properties.isFileUpload != null){
+        if(formField.properties.isFileUpload == "true"){
+          formField.typeName = 'fileUpload';
+        }
+      }
+      if(formField.properties.isFileDownload != null){
+        if(formField.properties.isFileDownload == 'true'){
+          formField.typeName = 'fileDownload';
+        }
+      }
     }
     switch(formField.typeName){
       case 'string':
-        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="text" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">';
+        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="text" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'" />';
         break;
       case 'long':
-        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="number" step="1" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'">';
+        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="number" step="1" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'" />';
         break;
       case 'boolean':
-        html += '<input class="class_boolean" id="id_form_field_input_'+ formField.id +'" type="checkbox" '+ (formField.defaultValue == true?'checked':'') +'>';
+        html += '<input class="class_boolean" id="id_form_field_input_'+ formField.id +'" type="checkbox" '+ (formField.defaultValue == true?'checked':'') +' />';
         break;
       case 'date':
-        html += '<input id="id_form_field_input_'+ formField.id +'" type="date">';
+        html += '<input id="id_form_field_input_'+ formField.id +'" type="date" />';
         break;
       case 'enum':
         html += '<select class="class_enum" id="id_form_field_input_'+ formField.id +'">';
@@ -87,6 +98,13 @@ function render_form(formFields){
           });
         }
         html += '</select>';
+        break;
+      case 'fileUpload':
+        html += '<input id="id_form_field_input_'+ formField.id +'" type="file" name="'+ formField.id +'" />';
+        fileFieldNumber++;
+        break;
+      case 'fileDownload':
+        html += '<a href="/projekat/file/download/'+ formField.defaultValue +'">Download</a>';
         break;
     }
     html += '</div>';
@@ -141,7 +159,6 @@ function render_form(formFields){
       }
       else if(formField.typeName == 'date'){
         var date = new Date($('#id_form_field_input_' + formField.id).val())
-        console.log(date);
         if(date == 'Invalid Date'){
           fields.push({ 'fieldId': formField.id, 'fieldValue': null, 'fieldType': formField.typeName })
         }
@@ -153,15 +170,45 @@ function render_form(formFields){
         fields.push({ 'fieldId': formField.id, 'fieldValue': $('#id_form_field_input_' + formField.id).val(), 'fieldType': formField.typeName })
       }
     });
-    $.ajax({
-      url: 'projekat/task/' + taskId,
-      method: 'POST',
-      data: JSON.stringify(fields),
-      contentType: 'application/json',
-      success: function(data, status, xhr){
-        window.location.href = '/tasks.html';
+
+    if(fileFieldNumber == 0){
+      formPost(fields);
+    }
+
+    formFields.forEach(formField => {
+      if(formField.typeName == 'fileUpload'){
+        var file = $('#id_form_field_input_' + formField.id).prop('files')[0];
+        var data = new FormData();
+        data.append('doc', file);
+        $.ajax({
+          method: 'POST', 
+          url: '/projekat/file/upload', 
+          data: data, 
+          cache: false, 
+          contentType: false, 
+          processData: false, 
+          success: function(fileCode, status, xhr){
+            fileFieldNumber--;
+            fields.push({ 'fieldId': formField.id, 'fieldValue': fileCode, 'fieldType': formField.typeName });
+            if(fileFieldNumber == 0){
+              formPost(fields);
+            }
+          }
+        });
       }
     });
+  });
+}
+
+function formPost(fields){
+  $.ajax({
+    url: 'projekat/task/' + taskId,
+    method: 'POST',
+    data: JSON.stringify(fields),
+    contentType: 'application/json',
+    success: function(data, status, xhr){
+      window.location.href = '/tasks.html';
+    }
   });
 }
 
