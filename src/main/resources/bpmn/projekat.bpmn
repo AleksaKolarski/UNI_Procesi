@@ -469,8 +469,8 @@
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_1lcsger" sourceRef="BoundaryEvent_1879h88" targetRef="Task_1ulxvw6" />
-    <bpmn:userTask id="Task_1ulxvw6" name="Mentor odlucuje o sudbini rada" camunda:assignee="${mentor.id}">
+    <bpmn:sequenceFlow id="SequenceFlow_1lcsger" sourceRef="BoundaryEvent_1879h88" targetRef="Task_MentorOdlucujeOSudbiniRada" />
+    <bpmn:userTask id="Task_MentorOdlucujeOSudbiniRada" name="Mentor odlucuje o sudbini rada" camunda:assignee="${mentor.id}">
       <bpmn:documentation>Isteklo je 3 meseca</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
@@ -485,7 +485,7 @@
       <bpmn:outgoing>SequenceFlow_05kxqcb</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0566cct</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_1jgtbax" sourceRef="Task_1ulxvw6" targetRef="ExclusiveGateway_0meba1i" />
+    <bpmn:sequenceFlow id="SequenceFlow_1jgtbax" sourceRef="Task_MentorOdlucujeOSudbiniRada" targetRef="ExclusiveGateway_0meba1i" />
     <bpmn:sequenceFlow id="SequenceFlow_05kxqcb" sourceRef="ExclusiveGateway_0meba1i" targetRef="SubProcess_04mpix6">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${inNastaviRad == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -495,18 +495,31 @@
     <bpmn:sequenceFlow id="SequenceFlow_0566cct" sourceRef="ExclusiveGateway_0meba1i" targetRef="EndEvent_1aorndf">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${inNastaviRad == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0rqe1dk" sourceRef="SubProcess_04mpix6" targetRef="Task_0ei3iy9" />
-    <bpmn:userTask id="Task_0ei3iy9" name="Student formira elaborat i salje ga svim clanovima komisije (email)">
+    <bpmn:sequenceFlow id="SequenceFlow_0rqe1dk" sourceRef="SubProcess_04mpix6" targetRef="Task_StudentFormiraElaborat" />
+    <bpmn:userTask id="Task_StudentFormiraElaborat" name="Student formira elaborat i salje ga svim clanovima komisije (email)" camunda:assignee="${student.id}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="inRad" label="Rad" type="string">
+            <camunda:properties>
+              <camunda:property id="isFileUpload" value="true" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0rqe1dk</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1dwdsyh</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_08ftplc</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_08ftplc" sourceRef="Task_0ei3iy9" targetRef="Task_1sn27kq" />
-    <bpmn:sendTask id="Task_1sn27kq" name="Slanje elaborata clanovima komisije" camunda:class="com.projekat.Procesi.service.MailSendService">
+    <bpmn:sequenceFlow id="SequenceFlow_08ftplc" sourceRef="Task_StudentFormiraElaborat" targetRef="Task_SlanjeElaborataKomisiji" />
+    <bpmn:sendTask id="Task_SlanjeElaborataKomisiji" name="Slanje elaborata clanovima komisije" camunda:class="com.projekat.Procesi.service.MailSendService">
       <bpmn:incoming>SequenceFlow_08ftplc</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_01lbwnu</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics />
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="SequenceFlow_01lbwnu" sourceRef="Task_1sn27kq" targetRef="Task_1smz8tt" />
+    <bpmn:sequenceFlow id="SequenceFlow_01lbwnu" sourceRef="Task_SlanjeElaborataKomisiji" targetRef="Task_1smz8tt" />
     <bpmn:userTask id="Task_1smz8tt" name="Clanovi komisije citaju rad i ostavljaju komentare">
       <bpmn:incoming>SequenceFlow_01lbwnu</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0v1as76</bpmn:outgoing>
@@ -534,7 +547,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_01pvl2r" name="mentor prihvata zamerke" sourceRef="ExclusiveGateway_0ftyqts" targetRef="Task_15zav1r">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">true==true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_1dwdsyh" sourceRef="Task_15zav1r" targetRef="Task_0ei3iy9" />
+    <bpmn:sequenceFlow id="SequenceFlow_1dwdsyh" sourceRef="Task_15zav1r" targetRef="Task_StudentFormiraElaborat" />
     <bpmn:userTask id="Task_15zav1r" name="Student cita zamerke">
       <bpmn:incoming>SequenceFlow_01pvl2r</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1dwdsyh</bpmn:outgoing>
@@ -767,7 +780,7 @@
         <di:waypoint x="2375" y="11" />
         <di:waypoint x="2375" y="-17" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_0lwn101_di" bpmnElement="Task_1ulxvw6">
+      <bpmndi:BPMNShape id="UserTask_0lwn101_di" bpmnElement="Task_MentorOdlucujeOSudbiniRada">
         <dc:Bounds x="2325" y="-97" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0meba1i_di" bpmnElement="ExclusiveGateway_0meba1i" isMarkerVisible="true">
@@ -794,14 +807,14 @@
         <di:waypoint x="2575" y="120" />
         <di:waypoint x="2646" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1n18vze_di" bpmnElement="Task_0ei3iy9">
+      <bpmndi:BPMNShape id="UserTask_1n18vze_di" bpmnElement="Task_StudentFormiraElaborat">
         <dc:Bounds x="2646" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_08ftplc_di" bpmnElement="SequenceFlow_08ftplc">
         <di:waypoint x="2746" y="120" />
         <di:waypoint x="2776" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="SendTask_17b0684_di" bpmnElement="Task_1sn27kq">
+      <bpmndi:BPMNShape id="SendTask_17b0684_di" bpmnElement="Task_SlanjeElaborataKomisiji">
         <dc:Bounds x="2776" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_01lbwnu_di" bpmnElement="SequenceFlow_01lbwnu">
