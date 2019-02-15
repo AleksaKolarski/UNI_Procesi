@@ -47,12 +47,6 @@ public class MailSendService implements JavaDelegate {
 		catch (Exception e) {
 		}
 		emailSender.send(message);
-		
-		//SimpleMailMessage message = new SimpleMailMessage(); 
-        //message.setTo((String)to.getValue(execution)); 
-        //message.setSubject((String)subject.getValue(execution)); 
-        //message.setText((String)messageTxt.getValue(execution));
-        //emailSender.send(message);
 	}
 
 	

@@ -170,16 +170,21 @@ public class TaskController {
 
 			if (temp.getFieldType().equals("boolean")) {
 				map.put(temp.getFieldId(), Boolean.parseBoolean(temp.getFieldValue()));
-			} else if (temp.getFieldType().equals("long")) {
+			}
+			else if (temp.getFieldType().equals("long")) {
 				map.put(temp.getFieldId(), Long.parseLong(temp.getFieldValue()));
-			} else if (temp.getFieldType().equals("date")) {
-				SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyy");
+			}
+			/*
+			else if (temp.getFieldType().equals("date")) {
+				SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy");
 				try {
 					map.put(temp.getFieldId(), format.parse(temp.getFieldValue()));
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-			} else {
+			}
+			*/
+			else {
 				map.put(temp.getFieldId(), temp.getFieldValue());
 			}
 		}

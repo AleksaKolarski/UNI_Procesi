@@ -63,6 +63,11 @@ function render_form(formFields){
           formField.typeName = 'fileDownload';
         }
       }
+      if(formField.properties.isDate != null){
+        if(formField.properties.isDate == 'true'){
+          formField.typeName = 'date';
+        }
+      }
     }
     switch(formField.typeName){
       case 'string':
@@ -75,7 +80,7 @@ function render_form(formFields){
         html += '<input class="class_boolean" id="id_form_field_input_'+ formField.id +'" type="checkbox" '+ (formField.defaultValue == true?'checked':'') +' />';
         break;
       case 'date':
-        html += '<input id="id_form_field_input_'+ formField.id +'" type="date" />';
+        html += '<input id="id_form_field_input_'+ formField.id +'" type="date" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'"/>';
         break;
       case 'enum':
         html += '<select class="class_enum" id="id_form_field_input_'+ formField.id +'">';
@@ -157,15 +162,19 @@ function render_form(formFields){
       if(formField.typeName == 'boolean'){
         fields.push({ 'fieldId': formField.id, 'fieldValue': $('#id_form_field_input_' + formField.id).is(':checked'), 'fieldType': formField.typeName })
       }
+      /*
       else if(formField.typeName == 'date'){
+        
         var date = new Date($('#id_form_field_input_' + formField.id).val())
         if(date == 'Invalid Date'){
           fields.push({ 'fieldId': formField.id, 'fieldValue': null, 'fieldType': formField.typeName })
         }
         else{
-          fields.push({ 'fieldId': formField.id, 'fieldValue': date.getDay()+'/'+date.getMonth()+'/'+date.getFullYear(), 'fieldType': formField.typeName })
+          //fields.push({ 'fieldId': formField.id, 'fieldValue': date.getFullYear()+'-'+('0'+date.getMonth()).slice(-2)+'-'+('0'+date.getDay()).slice(-2)), 'fieldType': formField.typeName })
+          fields.push({ 'fieldId': formField.id, 'fieldValue': ('0'+date.getDay()).slice(-2)+'/'+('0'+date.getMonth()).slice(-2)+'/'+date.getFullYear(), 'fieldType': formField.typeName })
         }
       }
+      */
       else{
         fields.push({ 'fieldId': formField.id, 'fieldValue': $('#id_form_field_input_' + formField.id).val(), 'fieldType': formField.typeName })
       }
