@@ -11,6 +11,7 @@ import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.form.type.EnumFormType;
+import org.camunda.bpm.engine.impl.form.type.StringFormType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class InitBoardEnum implements TaskListener {
 		List<User> professors = identityService.createUserQuery().memberOfGroup("professors").list();
 		User mentor = (User) delegateTask.getExecution().getVariable("mentor");
 		for (FormField f : fields) {
-			if(f.getTypeName().equals("enum")) {				
+			if(f.getTypeName().equals("enum")) {
 				if(f.getId().equals("inPresident") || f.getId().equals("inBoard1") || f.getId().equals("inBoard2") || f.getId().equals("inBoard3")) {
 					EnumFormType enumFormType = (EnumFormType) f.getType();
 					Map<String, String> values = enumFormType.getValues();

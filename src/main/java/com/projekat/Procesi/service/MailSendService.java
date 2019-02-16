@@ -45,6 +45,7 @@ public class MailSendService implements JavaDelegate {
 			
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 		}
 		emailSender.send(message);
 	}

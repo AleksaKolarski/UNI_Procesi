@@ -28,11 +28,13 @@ public class StartProcessHandler implements ExecutionListener {
 		List<User> professors = identityService.createUserQuery().memberOfGroup("professors").list();
 		List<User> referents = identityService.createUserQuery().memberOfGroup("studentService").list();
 		User dean = identityService.createUserQuery().userId("dean").singleResult();
+		User library = identityService.createUserQuery().userId("library").singleResult();
 		
 		execution.setVariable("students", students);
 		execution.setVariable("professors", professors);
 		execution.setVariable("referents", referents);
 		execution.setVariable("dean", dean);
+		execution.setVariable("library", library);
 	}
 
 }

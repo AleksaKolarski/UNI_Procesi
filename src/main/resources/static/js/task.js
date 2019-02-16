@@ -68,6 +68,11 @@ function render_form(formFields){
           formField.typeName = 'date';
         }
       }
+      if(formField.properties.isTime != null){
+        if(formField.properties.isTime == 'true'){
+          formField.typeName = 'time';
+        }
+      }
     }
     switch(formField.typeName){
       case 'string':
@@ -82,13 +87,16 @@ function render_form(formFields){
       case 'date':
         html += '<input id="id_form_field_input_'+ formField.id +'" type="date" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'"/>';
         break;
+      case 'time':
+        html += '<input id="id_form_field_input_'+ formField.id +'" type="time" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'"/>';
+        break;
       case 'enum':
         html += '<select class="class_enum" id="id_form_field_input_'+ formField.id +'">';
         if(formField.properties.enumSource == null){
           var keys = Object.keys(formField.type.values);
           keys.forEach(key => {
             var value = formField.type.values[key];
-            html += '<option value="'+ key +'" '+ (key==formField.defaultValue?'selected':'') +'>'+ value +'</option>';
+            html += '<option value="'+ key +'" '+ (key==formField.defaultValue||key==formField.properties.defaultValue?'selected':'') +'>'+ value +'</option>';
           });
         }
         else{
