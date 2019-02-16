@@ -55,7 +55,7 @@ public class ProcessController {
 		}
 		
 		try {
-			ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().startableByUser(user.getId()).singleResult();
+			ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().startableByUser(user.getId()).latestVersion().singleResult();
 			processInstance = runtimeService.startProcessInstanceById(definition.getId());
 			return new ResponseEntity<>(processInstance.getId(), HttpStatus.OK);
 		}

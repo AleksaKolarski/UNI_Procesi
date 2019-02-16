@@ -90,6 +90,7 @@ function render_form(formFields){
       case 'time':
         html += '<input id="id_form_field_input_'+ formField.id +'" type="time" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'"/>';
         break;
+      case 'enumeracija':
       case 'enum':
         html += '<select class="class_enum" id="id_form_field_input_'+ formField.id +'">';
         if(formField.properties.enumSource == null){
