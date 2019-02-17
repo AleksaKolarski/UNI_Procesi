@@ -76,7 +76,14 @@ function render_form(formFields){
     }
     switch(formField.typeName){
       case 'string':
-        html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="text" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'" />';
+        if(formField.properties.isMultiline!= null){
+          if(formField.properties.isMultiline == 'true'){
+            html += '<textarea class="class_text" id="id_form_field_input_'+ formField.id +'" rows="5">'+ (formField.defaultValue!=null?formField.defaultValue:'') +'</textarea>';
+          }
+        }
+        else{
+          html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="text" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'" />';
+        }
         break;
       case 'long':
         html += '<input class="class_text" id="id_form_field_input_'+ formField.id +'" type="number" step="1" value="'+ (formField.defaultValue!=null?formField.defaultValue:'') +'" />';
@@ -254,11 +261,11 @@ function add_validation_constraints(formField){
       case 'maxlength':
         maxlength = constraint.configuration;
         break;
-      case 'min':
-        min = constraint.configuration;
+        case 'min':
+        min = parseInt(constraint.configuration, 10) + 1;
         break;
       case 'max':
-        max = constraint.configuration;
+        max = parseInt(constraint.configuration, 10) - 1;
         break;
       case 'readonly':
         formFieldInput.prop('readonly', true);
@@ -315,10 +322,10 @@ function check_validation_constraints(formField){
         maxlength = constraint.configuration;
         break;
       case 'min':
-        min = constraint.configuration;
+        min = parseInt(constraint.configuration, 10) + 1;
         break;
       case 'max':
-        max = constraint.configuration;
+        max = parseInt(constraint.configuration, 10) - 1;
         break;
     }
   });
