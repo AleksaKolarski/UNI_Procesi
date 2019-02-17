@@ -29,8 +29,8 @@ function render_tasks(target, tasks){
     html += '<a href="/task.html?taskId='+ task.id +'">' + 
               '<div class="class_div_task">' + 
                 '<p class="class_p_task_name">name: '+ task.name +'</p>' +
-                '<p class="class_p_task_created">'+ (task.created!=null?'created: '+ moment(task.created).format('DD.MMM.YYYY. hh:mm:ss'):'') +'</p>' + 
-                (task.due!=null?'<p class="class_p_task_due">due: '+ moment(task.due).format('DD.MMM.YYYY. hh:mm:ss') +'</p>':'') + 
+                '<p class="class_p_task_created">'+ (task.created!=null?'created: '+ moment(task.created.slice(0, -9)).format('DD.MMM.YYYY. hh:mm:ss'):'') +'</p>' + 
+                (task.due!=null?'<p class="class_p_task_due">due: '+ moment(task.due.slice(0, -9)).format('DD.MMM.YYYY. hh:mm:ss') +'</p>':'') + 
                 '<p class="class_p_task_description">'+ (task.description!=null?'description: ' + task.description:'') + '</p>' + 
               '</div>' + 
             '</a>';
