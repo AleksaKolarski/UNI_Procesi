@@ -1,8 +1,5 @@
 package com.projekat.Procesi.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.identity.User;

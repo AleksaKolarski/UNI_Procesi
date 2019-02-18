@@ -2,7 +2,9 @@ package com.projekat.Procesi.storage;
 
 public class StorageFileNotFoundException extends StorageException {
 
-    public StorageFileNotFoundException(String message) {
+	private static final long serialVersionUID = -1247566654624558725L;
+
+	public StorageFileNotFoundException(String message) {
         super(message);
     }
 

@@ -11,7 +11,6 @@ import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.form.type.EnumFormType;
-import org.camunda.bpm.engine.impl.form.type.StringFormType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
